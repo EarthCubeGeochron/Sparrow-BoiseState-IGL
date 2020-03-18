@@ -1,3 +1,4 @@
 sparrow-secrets.sh
 test-data
 db-backups
+sparrow-config.overrides.sh
