@@ -1,7 +1,6 @@
-#!/usr/bin/env zsh
+#!/bin/bash
 
-here="${0:h}"
-cd "$here"
+here="$SPARROW_CONFIG_DIR"
 
 export SPARROW_PATH="$here/Sparrow"
 export SPARROW_DATA_DIR="$here/test-data"
@@ -18,4 +17,3 @@ export SPARROW_INIT_SQL="$pipeline/sql"
 
 [ -f sparrow-secrets.sh ] && source sparrow-secrets.sh
 [ -f sparrow-config.overrides.sh ] && source sparrow-config.overrides.sh
-
