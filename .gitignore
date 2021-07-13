@@ -1,3 +1,7 @@
 sparrow-secrets.sh
 test-data
 db-backups
+
+# Ignore certificate files
+*.pem
+*.crt
