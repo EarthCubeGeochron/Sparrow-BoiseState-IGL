@@ -5,3 +5,6 @@ db-backups
 # Ignore certificate files
 *.pem
 *.crt
+
+# Ignore overrides file
+sparrow-config.overrides.sh
