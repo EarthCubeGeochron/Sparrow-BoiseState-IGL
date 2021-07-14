@@ -5,7 +5,7 @@ here="$SPARROW_CONFIG_DIR"
 export SPARROW_DATA_DIR="$here/test-data"
 export SPARROW_DB_BACKUPS="$here/db-backups"
 export SPARROW_SITE_CONTENT="$here/site-content"
-export SPARROW_VERSION=">=2.0.0.beta9"
+export SPARROW_VERSION=">=2.0.0.beta10"
 
 export COMPOSE_PROJECT_NAME="boise_state"
 export SPARROW_LAB_NAME="Boise State IGL"
