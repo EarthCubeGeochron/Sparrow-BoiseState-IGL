@@ -5,6 +5,7 @@ from sparrow import Database
 
 from .et_redux_importer import ETReduxImporter
 from .import_metadata import import_metadata
+from sparrow.context import get_database
 
 cli = Group()
 
@@ -26,7 +27,7 @@ def import_xml(**kwargs):
     path = Path(env)
     assert path.is_dir()
 
-    db = Database()
+    db = get_database()
     importer = ETReduxImporter(db)
     files = path.glob("**/*.xml")
     importer.iterfiles(files, **kwargs)

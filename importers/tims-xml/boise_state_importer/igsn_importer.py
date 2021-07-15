@@ -8,6 +8,7 @@ class IGSNImporter(BaseImporter):
     def import_data(self, all=True):
         q = self.db.session.query(self.db.model.igsn_data)
         self.num = 0
+        i = 0
         for i, igsn_data in enumerate(q):
             self.import_igsn(igsn_data)
             print(igsn_data.igsn)

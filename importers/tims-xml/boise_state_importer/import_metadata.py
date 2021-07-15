@@ -1,6 +1,6 @@
 from requests import get
 from click import echo, style
-from sparrow.database import Database
+from sparrow.context import get_database
 from sqlalchemy.sql import select
 from sqlalchemy.dialects.postgresql import insert
 from .igsn_importer import IGSNImporter
@@ -50,7 +50,7 @@ def import_metadata(download=False):
     """
     Import metadata
     """
-    db = Database()
+    db = get_database() 
     if download:
         download_metadata(db)
     else:
