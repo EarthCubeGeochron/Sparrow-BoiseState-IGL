@@ -5,6 +5,9 @@
 # import process within a docker container
 import_pipeline="$SPARROW_CONFIG_DIR/data-importers"
 
+sparrow build backend
+docker build -t icp_import_container "$SPARROW_CONFIG_DIR/data-importers/icp_import_container"
+
 # Run within container, mounting Sparrow data directory
 # and importer code.
 sparrow compose run \
@@ -12,5 +15,5 @@ sparrow compose run \
   -e "PYTHONPATH=/icp_importer" \
   -v "$SPARROW_DATA_DIR:/Data:ro" \
   -v "$import_pipeline:/icp_importer" \
-  backend \
+  icp_import_container \
   python -m icp_importer $@
