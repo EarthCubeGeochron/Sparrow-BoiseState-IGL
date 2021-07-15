@@ -1,0 +1,16 @@
+#!/bin/bash
+# Description: Import Boise State ICP-MS data
+
+# This script runs on the host system and kicks off the
+# import process within a docker container
+import_pipeline="$SPARROW_CONFIG_DIR/data-importers"
+
+# Run within container, mounting Sparrow data directory
+# and importer code.
+sparrow compose run \
+  -e "SPARROW_DATA_DIR=/Data" \
+  -e "PYTHONPATH=/icp_importer" \
+  -v "$SPARROW_DATA_DIR:/Data:ro" \
+  -v "$import_pipeline:/icp_importer" \
+  backend \
+  python -m icp_importer $@
