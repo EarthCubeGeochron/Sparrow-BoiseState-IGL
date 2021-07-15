@@ -36,9 +36,12 @@ class ETReduxImporter(BaseImporter):
 
     def import_datafile(self, fn, rec):
         # Read in XML
-        et = XML(open(fn, "rb").read())
-        et = strip_ns_prefix(et)
-        return self.__import_element_tree(et)
+        try:
+            et = XML(open(fn, "rb").read())
+            et = strip_ns_prefix(et)
+            return self.__import_element_tree(et)
+        except Exception as err:
+            raise SparrowImportError(str(err))
 
     def __import_element_tree(self, et):
         """
