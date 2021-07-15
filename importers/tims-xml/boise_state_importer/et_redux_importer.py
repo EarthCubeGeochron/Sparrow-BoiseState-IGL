@@ -38,10 +38,11 @@ class ETReduxImporter(BaseImporter):
         # Read in XML
         try:
             et = XML(open(fn, "rb").read())
-            et = strip_ns_prefix(et)
-            return self.__import_element_tree(et)
         except Exception as err:
             raise SparrowImportError(str(err))
+        et = strip_ns_prefix(et)
+        return self.__import_element_tree(et)
+
 
     def __import_element_tree(self, et):
         """
@@ -80,7 +81,7 @@ class ETReduxImporter(BaseImporter):
 
         for i, f in enumerate(fractions):
             s = self.import_analysis(
-                f, session, session_index=i, analysis_type="analysisFraction"
+                f, session, session_index=i, type="analysisFraction"
             )
 
         s1 = self.import_dates(et.find("sampleDateModels"), session)
@@ -98,7 +99,7 @@ class ETReduxImporter(BaseImporter):
             session,
             is_interpreted=True,
             is_standard=False,
-            analysis_type="Interpreted Age",
+            type="Interpreted Age",
         )
         self.db.session.flush()
 
