@@ -11,7 +11,7 @@ export COMPOSE_PROJECT_NAME="boise_state"
 export SPARROW_LAB_NAME="Boise State IGL"
 
 # For now, we keep importer in main repository
-pipeline="$here/importers/tims-xml"
+pipeline="$here/data-importers"
 export SPARROW_COMMANDS="$pipeline/bin"
 export SPARROW_INIT_SQL="$pipeline/sql"
 
