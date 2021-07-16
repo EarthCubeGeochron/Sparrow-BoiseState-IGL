@@ -2,6 +2,8 @@ from os import environ
 from click import command, option, echo, secho, style
 from sparrow.context import get_database
 from pathlib import Path
+from pandas import read_feather
+from IPython import embed
 
 @command(name="import-icp-data")
 @option("--fix-errors", is_flag=True, default=False)
@@ -21,6 +23,8 @@ def cli(**kwargs):
     assert path.is_dir()
 
     db = get_database()
-    files = path.glob("**/*.xlsx")
+    files = path.glob("**/*.feather")
     for file in files:
-        print(file)
+        df = read_feather(file)
+        embed()
+        raise

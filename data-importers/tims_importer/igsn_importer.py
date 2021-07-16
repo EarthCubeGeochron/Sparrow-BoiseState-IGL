@@ -19,7 +19,11 @@ class IGSNImporter(BaseImporter):
         if not data:
             return
         s = data["sample"]
+
+        print(s["igsn"])
+
         # Data with 'status' set are currently embargoed
+
         if "status" in s:
             return
         self.num += 1
@@ -32,9 +36,17 @@ class IGSNImporter(BaseImporter):
         except KeyError:
             location = None
 
+        parent_igsn = s.get("parent_igsn")
+        parent = None
+        if parent_igsn is not None:
+            parent = self.sample(igsn=parent_igsn)
+            self.db.session.add(parent)
+
         igsn = s["igsn"]
         name = html.unescape(s["name"])
         sample = self.sample(igsn=igsn)
+        if parent is not None:
+            sample.member_of = parent.id
         sample.name = name
         sample.location = location
         sample.location_name = s.get(

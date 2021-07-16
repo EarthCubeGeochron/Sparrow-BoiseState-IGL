@@ -1,0 +1,4 @@
+version: "3.6"
+services:
+  backend:
+    build: ${SPARROW_CONFIG_DIR}/data-importers/icp_import_container

@@ -1,50 +1,43 @@
 FROM sparrowdata/backend:2.0.0.beta11
 
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-
-ENV R_VERSION 3.5.1
-ENV R_SOURCE /usr/local/src/R
-
-ENV BUILD_DEPS \
-  cairo-dev \ 
-  libxmu-dev \
-  openjdk8-jre-base \ 
-  pango-dev \
-  perl \
-  tiff-dev \
-  tk-dev \
-  wget \
-  tar
-
-ENV PERSISTENT_DEPS \
-  libintl \
-  gcc \
-  g++ \
-  gfortran \
-  icu-dev \
-  libjpeg-turbo \
-  libpng-dev \
-  make \
-  openblas-dev \
-  pcre-dev \
-  readline-dev \
-  xz-dev \
+RUN apk add --no-cache \
+  build-base \
+  cmake \
+  bash \
+  boost-dev \
+  autoconf \
   zlib-dev \
-  bzip2-dev \
-  curl-dev
+  flex \
+  bison
 
-RUN apk upgrade --update && \
-  apk add --no-cache --virtual .build-deps $BUILD_DEPS && \
-  apk add --no-cache --virtual .persistent-deps $PERSISTENT_DEPS && \
-  mkdir -p $R_SOURCE && cd $R_SOURCE && \
-  wget https://cran.r-project.org/src/base/R-3/R-${R_VERSION}.tar.gz && \
-  tar -zxvf R-${R_VERSION}.tar.gz && \
-  cd R-${R_VERSION} && \
-  ./configure --prefix=/usr/local \
-  --without-x && \
-  make && make install && \
-  cd src/nmath/standalone && make && make install && \
-  apk del .build-deps
+RUN pip install --no-cache-dir six pytest cython
 
-RUN apk add --no-cache 
+ARG ARROW_VERSION=0.12.0
+ARG ARROW_SHA1=2ede75769e12df972f0acdfddd53ab15d11e0ac2
+ARG ARROW_BUILD_TYPE=release
+
+ENV ARROW_HOME=/usr/local \
+  PARQUET_HOME=/usr/local
+
+#Download and build apache-arrow
+RUN mkdir /arrow \
+  && apk add --no-cache curl \
+  && curl -o /tmp/apache-arrow.tar.gz -SL https://github.com/apache/arrow/archive/apache-arrow-${ARROW_VERSION}.tar.gz \
+  && echo "$ARROW_SHA1 *apache-arrow.tar.gz" | sha1sum /tmp/apache-arrow.tar.gz \
+  && tar -xvf /tmp/apache-arrow.tar.gz -C /arrow --strip-components 1 \
+  && mkdir -p /arrow/cpp/build \
+  && cd /arrow/cpp/build \
+  && cmake -DCMAKE_BUILD_TYPE=$ARROW_BUILD_TYPE \
+  -DCMAKE_INSTALL_LIBDIR=lib \
+  -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
+  -DARROW_PARQUET=on \
+  -DARROW_PYTHON=on \
+  -DARROW_PLASMA=on \
+  -DARROW_BUILD_TESTS=OFF \
+  .. \
+  && make -j$(nproc) \
+  && make install \
+  && cd /arrow/python \
+  && python setup.py build_ext --build-type=$ARROW_BUILD_TYPE --with-parquet \
+  && python setup.py install \
+  && rm -rf /arrow /tmp/apache-arrow.tar.gz

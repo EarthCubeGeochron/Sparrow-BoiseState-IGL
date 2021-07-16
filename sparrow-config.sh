@@ -14,6 +14,7 @@ export SPARROW_LAB_NAME="Boise State IGL"
 pipeline="$here/data-importers"
 export SPARROW_COMMANDS="$pipeline/bin"
 export SPARROW_INIT_SQL="$pipeline/sql"
+export SPARROW_COMPOSE_OVERRIDES="$here/new-containers.yaml"
 
 # Get secrets if applicable
 [ -f sparrow-secrets.sh ] && source sparrow-secrets.sh
