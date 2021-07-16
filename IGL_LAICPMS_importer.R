@@ -2,18 +2,23 @@ rm(list=ls()) # clear all
 ##INSTALL AND LOAD LIBRARIES FOR R PACKAGES NEEDED TO RUN THIS CODE
 if (!require('tidyverse')) install.packages('tidyverse'); library('tidyverse')
 if (!require('readxl')) install.packages('readxl'); library('readxl')
-if (!require('reshape2')) install.packages('reshape2'); library('reshape2')
 if (!require('feather')) install.packages('feather'); library('feather')
 
-##SPECIFY THE DIRECTORY YOU WANT THE VISUALIZATIONS TO BE SAVED TO
-setwd("/Users/mtmohr/Documents/IGL redux/Importers")
-vis.output <- getwd()
-FDT.folder <- "/Users/mtmohr/Documents/IGL redux/LAICPMS_example_FDTs"
+setwd("/Users/mtmohr/Documents/Sparrow-BoiseState-IGL") #set Working directory where outputs go
+FDT_directory <- "/Users/mtmohr/Documents/IGL redux/LAICPMS_example_FDTs" #sparrow directory
+FDT_list_current <- list.files(FDT_directory, full.names = T, recursive = FALSE) #make a list of file names in the directory of choice, change recursive = TRUE if there are sub directories
 
-##IMPORT DATA FROM .CSV
-FDT.list <- list.files(FDT.folder, full.names = T) #make a list of file names in the directory of choice
-FDT.list #show list of file names
+if(file.exists("/Users/mtmohr/Documents/Sparrow-BoiseState-IGL/FDT_list_archive")){
+  archive_status <- "present"
+  load("/Users/mtmohr/Documents/Sparrow-BoiseState-IGL/FDT_list_archive")
+  FDT_list_archive
+}else{archive_status <- "absent"}
 
+if(archive_status == "present"){FDT.list <- FDT_list_current[!(FDT_list_current %in% FDT_list_archive)]
+FDT.list
+}else{FDT.list <- FDT_list_current
+FDT.list}
+  
 #NEW NAMES FOR COLUMNS THAT ARE R-FRIENDLY
 FDT.col.names <- c('analysis', 'composition.U', 'composition.Th', 'composition.Pb', 'composition.ratio.ThU', 'composition.206Pbcps', 'composition.ratio.206Pb204Pb', 'composition.ratio.206Pb204Pb.1sigabs', 'isotope.ratio.208Pb232Th', 'isotope.ratio.208Pb232Th.2sigpercent', 'isotope.ratio.207Pb235U', 'isotope.ratio.207Pb235U.2sigpercent', 'isotope.ratio.206Pb238U', 'isotope.ratio.206Pb238U.2sigpercent', 'isotope.error.corr', 'isotope.ratio.238U206Pb', 'isotope.ratio.238U206Pb.2sigpercent', 'isotope.ratio.207Pb206Pb', 'isotope.ratio.207Pb206Pb.2sigpercent', 'date.208Pb232Th', 'date.208Pb232Th.2sigabs', 'date.208Pb232Th.2sigabs.sys', 'date.207Pb206Pb', 'date.207Pb206Pb.2sigabs', 'date.207Pb206Pb.2sigabs.sys', 'date.207Pb235U', 'date.207Pb235U.2sigabs', 'date.207Pb235U.2sigabs.sys', 'date.206Pb238U', 'date.206Pb238U.2sigabs', 'date.206Pb238U.2sigabs.sys', 'date.discordance.percent', 'date.discordance.percent.2sigpercent', 'P', 'Ti', 'Y', 'Nb', 'La', 'Ce', 'Pr',	'Nd',	'Sm',	'Eu',	'Gd',	'Tb',	'Dy',	'Ho',	'Er',	'Tm',	'Yb',	'Lu',	'Hf',	'Ta',	'Th',	'U', 'experiment')  
 
@@ -46,7 +51,7 @@ zircon.standards <- zircon.standards %>% separate(col = analysis, into = c('anal
 zircon.standards$standard.type <- ifelse(grepl('z', zircon.standards$analysis), 'primary', 'secondary')
 
 zircon.output <- rbind(zircon.samples, zircon.standards)
-# zircon.output <- zircon.output[, c('analysis', 'timestamp', 'grain.size', 'spot.number','type', 'standard.type', 'composition.U', 'composition.Th', 'composition.Pb', 'composition.ratio.ThU', 'composition.206Pbcps', 'composition.ratio.206Pb204Pb', 'composition.ratio.206Pb204Pb.1sigabs', 'isotope.ratio.208Pb232Th', 'isotope.ratio.208Pb232Th.2sigpercent', 'isotope.ratio.207Pb235U', 'isotope.ratio.207Pb235U.2sigpercent', 'isotope.ratio.206Pb238U', 'isotope.ratio.206Pb238U.2sigpercent', 'isotope.error.corr', 'isotope.ratio.238U206Pb', 'isotope.ratio.238U206Pb.2sigpercent', 'isotope.ratio.207Pb206Pb', 'isotope.ratio.207Pb206Pb.2sigpercent', 'date.208Pb232Th', 'date.208Pb232Th.2sigabs', 'date.208Pb232Th.2sigabs.sys', 'date.207Pb206Pb', 'date.207Pb206Pb.2sigabs', 'date.207Pb206Pb.2sigabs.sys', 'date.207Pb235U', 'date.207Pb235U.2sigabs', 'date.207Pb235U.2sigabs.sys', 'date.206Pb238U', 'date.206Pb238U.2sigabs', 'date.206Pb238U.2sigabs.sys', 'date.discordance.percent', 'date.discordance.percent.2sigpercent', 'P', 'Ti', 'Y', 'Nb', 'La', 'Ce', 'Pr',	'Nd',	'Sm',	'Eu',	'Gd',	'Tb',	'Dy',	'Ho',	'Er',	'Tm',	'Yb',	'Lu',	'Hf',	'Ta',	'Th',	'U', 'experiment', 'FDT.file')]
+zircon.output <- zircon.output[,c('analysis', 'timestamp','type', 'standard.type', 'composition.U', 'composition.Th', 'composition.Pb', 'composition.ratio.ThU', 'composition.206Pbcps', 'composition.ratio.206Pb204Pb', 'composition.ratio.206Pb204Pb.1sigabs', 'isotope.ratio.208Pb232Th', 'isotope.ratio.208Pb232Th.2sigpercent', 'isotope.ratio.207Pb235U', 'isotope.ratio.207Pb235U.2sigpercent', 'isotope.ratio.206Pb238U', 'isotope.ratio.206Pb238U.2sigpercent', 'isotope.error.corr', 'isotope.ratio.238U206Pb', 'isotope.ratio.238U206Pb.2sigpercent', 'isotope.ratio.207Pb206Pb', 'isotope.ratio.207Pb206Pb.2sigpercent', 'date.208Pb232Th', 'date.208Pb232Th.2sigabs', 'date.208Pb232Th.2sigabs.sys', 'date.207Pb206Pb', 'date.207Pb206Pb.2sigabs', 'date.207Pb206Pb.2sigabs.sys', 'date.207Pb235U', 'date.207Pb235U.2sigabs', 'date.207Pb235U.2sigabs.sys', 'date.206Pb238U', 'date.206Pb238U.2sigabs', 'date.206Pb238U.2sigabs.sys', 'date.discordance.percent', 'date.discordance.percent.2sigpercent', 'P', 'Ti', 'Y', 'Nb', 'La', 'Ce', 'Pr',	'Nd',	'Sm',	'Eu',	'Gd',	'Tb',	'Dy',	'Ho',	'Er',	'Tm',	'Yb',	'Lu',	'Hf',	'Ta',	'Th',	'U', 'experiment', 'FDT.file')]
 
 zircon.output <- zircon.output %>%    
                   mutate_if(.predicate = is.numeric,
@@ -56,4 +61,16 @@ zircon.output <- zircon.output %>%
                                                 abs(.x) > 0.1 ~ format(round(.x, 3), nsmall = 3),
                                                 abs(.x) > 0 ~ format(round(.x, 4), nsmall = 4)))
 
-write_feather(zircon.output, "IGL_LAICPMS_output.feather")
+
+if(file.exists("/Users/mtmohr/Documents/IGL redux/Importers/IGL_LAICPMS.feather")){
+  zircon.archive <- read_feather("/Users/mtmohr/Documents/IGL redux/Importers/IGL_LAICPMS.feather")
+  IGL_LAICPMS.output <- rbind(zircon.output, zircon.archive)
+  IGL_LAICPMS.output
+}else{
+  IGL_LAICPMS.output <- zircon.output
+}
+
+write_feather(IGL_LAICPMS.output, "IGL_LAICPMS.feather")
+
+FDT_list_archive <- FDT_list_current
+save(FDT_list_archive, file="/Users/mtmohr/Documents/Sparrow-BoiseState-IGL/FDT_list_archive")
