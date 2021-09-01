@@ -3,6 +3,7 @@ from click import echo, secho, style
 from pathlib import Path
 from pandas import read_feather
 from IPython import embed
+from rich import print
 import sparrow
 
 
@@ -25,7 +26,5 @@ def import_icp_data(fix_errors: bool = False, redo: bool = False):
     files = path.glob("**/*.feather")
     for file in files:
         df = read_feather(file)
-        print("About to embed")
-        embed()
-        raise
+        print(df)
     print("Done")
