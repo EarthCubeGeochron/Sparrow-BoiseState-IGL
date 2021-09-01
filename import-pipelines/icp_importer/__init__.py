@@ -1,14 +1,13 @@
 from os import environ
-from click import command, option, echo, secho, style
-from sparrow.context import get_database
+from click import echo, secho, style
 from pathlib import Path
 from pandas import read_feather
 from IPython import embed
+import sparrow
 
-@command(name="import-icp-data")
-@option("--fix-errors", is_flag=True, default=False)
-@option("--redo", is_flag=True, default=False)
-def cli(**kwargs):
+
+@sparrow.task()
+def import_icp_data(fix_errors: bool = False, redo: bool = False):
     """
     Import Boise State LA-ICP-MS data files
     """
@@ -22,7 +21,7 @@ def cli(**kwargs):
     path = Path(env)
     assert path.is_dir()
 
-    db = get_database()
+    db = sparrow.get_database()
     files = path.glob("**/*.feather")
     for file in files:
         df = read_feather(file)

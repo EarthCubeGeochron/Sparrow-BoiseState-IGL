@@ -1,19 +1,14 @@
 from os import environ
-from click import Group, option, echo, secho, style
+from click import echo, secho, style
 from pathlib import Path
-from sparrow import Database
+import sparrow
 
 from .et_redux_importer import ETReduxImporter
-from .import_metadata import import_metadata
-from sparrow.context import get_database
-
-cli = Group()
+from .import_metadata import import_metadata as _import_metadata
 
 
-@cli.command(name="import-xml")
-@option("--fix-errors", is_flag=True, default=False)
-@option("--redo", is_flag=True, default=False)
-def import_xml(**kwargs):
+@sparrow.task()
+def import_xml(fix_errors: bool = False, redo: bool = False):
     """
     Import Boise State XML files
     """
@@ -27,16 +22,15 @@ def import_xml(**kwargs):
     path = Path(env)
     assert path.is_dir()
 
-    db = get_database()
+    db = sparrow.get_database()
     importer = ETReduxImporter(db)
     files = path.glob("**/*.xml")
-    importer.iterfiles(files, **kwargs)
+    importer.iterfiles(files, fix_errors=fix_errors, redo=redo)
 
 
-@cli.command(name="import-metadata")
-@option("--download", is_flag=True, default=False)
-def __import_metadata(download=False):
+@sparrow.task()
+def import_metadata(download=False):
     """
     Import IGSN metadata from SESAR
     """
-    import_metadata(download=download)
+    _import_metadata(download=download)

@@ -38,7 +38,9 @@ def download_metadata(db):
     Download IGSN metadata from SESAR
     """
     echo("Requesting list of samples from SESAR")
-    next_list = "https://app.geosamples.org/samples/user_code/BSU?limit=100&hide_private=0"
+    next_list = (
+        "https://app.geosamples.org/samples/user_code/BSU?limit=100&hide_private=0"
+    )
     while next_list is not None:
         data = get_data(next_list)
         for igsn in data["igsn_list"]:
@@ -50,7 +52,7 @@ def import_metadata(download=False):
     """
     Import metadata
     """
-    db = get_database() 
+    db = get_database()
     if download:
         download_metadata(db)
     else:
