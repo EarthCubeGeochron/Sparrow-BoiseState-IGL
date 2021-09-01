@@ -7,7 +7,7 @@ from .et_redux_importer import ETReduxImporter
 from .import_metadata import import_metadata as _import_metadata
 
 
-@sparrow.task()
+@sparrow.task(name="import-xml")
 def import_xml(fix_errors: bool = False, redo: bool = False):
     """
     Import Boise State XML files
@@ -29,7 +29,7 @@ def import_xml(fix_errors: bool = False, redo: bool = False):
 
 
 @sparrow.task()
-def import_metadata(download=False):
+def import_metadata(download: bool = False):
     """
     Import IGSN metadata from SESAR
     """

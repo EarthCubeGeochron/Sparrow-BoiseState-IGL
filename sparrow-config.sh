@@ -12,7 +12,7 @@ export SPARROW_LAB_NAME="Boise State IGL"
 
 # For now, we keep importer in main repository
 export SPARROW_INIT_SQL="$here/init-sql"
-export SPARROW_PLUGIN_DIR="$here/import-pipelines"
+export SPARROW_PLUGIN_DIR="$here/plugins"
 
 # Get secrets if applicable
 [ -f sparrow-secrets.sh ] && source sparrow-secrets.sh
