@@ -45,6 +45,8 @@ def import_icp_data(fix_errors: bool = False, redo: bool = False):
 
     db = sparrow.get_database()
     files = path.glob("**/*.feather")
+    # Feather file should be ephemeral, ideally, because we want to preserve links to original files.
+    # One way to do this would be to include a "file_path" column in the feather file itself.
     for file in files:
         df = read_feather(file)
         convert_to_json(df)
